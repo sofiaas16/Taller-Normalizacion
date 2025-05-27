@@ -10,6 +10,9 @@ Paralelamente, el club organiza torneos y partidos amistosos que requieren coord
 
 Dado el alto grado de interdependencia entre atletas, programas de entrenamiento, eventos y patrocinios, se contemplará el uso de tablas intermedias para representar relaciones muchos a muchos (por ejemplo, jugadores inscritos en varios programas o eventos patrocinados por diversas entidades). Estas tablas auxiliares garantizarán la integridad referencial y facilitarán la aplicación de las reglas de negocio.
 
+![Club](./torneo.webp)
+
+
 ### Rúbrica
 
 | Criterio                                      | 0 pts (Insuficiente)                              | 50 pts (Aceptable)                                           | 100 pts (Excelente)                                          | Ponderación |
@@ -27,6 +30,8 @@ Por otro lado, los movimientos de stock deberán reflejar tanto las entradas (po
 
 Para garantizar la integridad y evitar redundancias, se utilizarán tablas intermedias en las relaciones que implican cardinalidades de muchos a muchos. Por ejemplo, al asociar múltiples productos a un solo movimiento o al enlazar los distintos tipos de producto con sus categorías, estas tablas puente asegurarán un diseño normalizado.
 
+![Inventario](./inventario.webp)
+
 ### Rúbrica
 
 | Criterio                                      | 0 pts (Insuficiente)                                       | 50 pts (Aceptable)                                           | 100 pts (Excelente)                                          | Ponderación |
@@ -42,7 +47,7 @@ El CineCampus, una sala universitaria de cine, desea contar con una aplicación 
 
 Paralelamente, el CineCampus necesita manejar el catálogo de intérpretes, relacionando actores y actrices con las producciones en las que participan, así como especificar el tipo de papel que desempeñan (protagonista, secundario, extra, etc.). Para soportar estos vínculos muchos-a-muchos, se prevé el uso de tablas intermedias que permitan asignar múltiples formatos a una misma película y asociar varios intérpretes a cada título sin duplicar datos.
 
-
+![Cine](./cine.webp)
 
 ### Rúbrica
 
