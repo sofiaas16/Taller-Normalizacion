@@ -22,91 +22,102 @@ DROP DATABASE IF EXISTS inventario;
 CREATE DATABASE inventario;
 USE inventario;
 
---
--- Tabla: Clasificacion
---
-DROP TABLE IF EXISTS `clasificacion`;
-CREATE TABLE `clasificacion` (
-    `id_clasificacion` INT NOT NULL AUTO_INCREMENT,
-    `nombre` VARCHAR(100) NOT NULL,
-    PRIMARY KEY (`id_clasificacion`)
+
+CREATE TABLE tipoProducto (
+    ID_tipo INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    PRIMARY KEY (ID_tipo)
+) ;
+
+
+CREATE TABLE categoria (
+    ID_categoria INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    PRIMARY KEY (ID_categoria)
+) ;
+
+
+CREATE TABLE producto (
+    ID_producto INT NOT NULL AUTO_INCREMENT,
+    ID_categoria INT NOT NULL,
+    ID_tipoproducto INT NOT NULL,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    PRIMARY KEY (ID_producto),
+    FOREIGN KEY (ID_categoria) REFERENCES categoria(ID_categoria),
+    FOREIGN KEY (ID_tipoproducto) REFERENCES tipoProducto(ID_tipo)
+) ;
+
+
+CREATE TABLE proveedor (
+    ID_proveedor INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    direccion VARCHAR(100),
+    telefono VARCHAR(20),
+    PRIMARY KEY (ID_proveedor)
+) ;
+
+
+CREATE TABLE compra (
+    ID_compra INT NOT NULL AUTO_INCREMENT,
+    ID_proveedor INT NOT NULL,
+    descripcion TEXT,
+    PRIMARY KEY (ID_compra),
+    FOREIGN KEY (ID_proveedor) REFERENCES proveedor(ID_proveedor)
+) ;
+
+
+CREATE TABLE productoCompra (
+    ID_producto INT NOT NULL,
+    ID_compra INT NOT NULL,
+    PRIMARY KEY (ID_producto, ID_compra),
+    FOREIGN KEY (ID_producto) REFERENCES producto(ID_producto),
+    FOREIGN KEY (ID_compra) REFERENCES compra(ID_compra)
+);
+
+CREATE TABLE inventario (
+    ID_inventario INT NOT NULL AUTO_INCREMENT,
+    ID_producto INT NOT NULL,
+    stockActual INT NOT NULL,
+    stockMinimo INT NOT NULL,
+    stockMaximo INT NOT NULL,
+    PRIMARY KEY (ID_inventario),
+    FOREIGN KEY (ID_producto) REFERENCES producto(ID_producto)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Tabla: ModalidadProducto
---
-DROP TABLE IF EXISTS `modalidad_producto`;
-CREATE TABLE `modalidad_producto` (
-    `id_modalidad_producto` INT NOT NULL AUTO_INCREMENT,
-    `nombre` VARCHAR(100) NOT NULL,
-    PRIMARY KEY (`id_modalidad_producto`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Tabla: Articulo
---
-DROP TABLE IF EXISTS `articulo`;
-CREATE TABLE `articulo` (
-    `id_articulo` INT NOT NULL AUTO_INCREMENT,
-    `nombre` VARCHAR(100) NOT NULL,
-    `detalle` TEXT,
-    `id_modalidad_producto` INT NOT NULL,
-    PRIMARY KEY (`id_articulo`),
-    FOREIGN KEY (`id_modalidad_producto`) REFERENCES `modalidad_producto`(`id_modalidad_producto`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE cliente (
+    ID_cliente INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    telefono VARCHAR(20),
+    email VARCHAR(100),
+    direccion VARCHAR(100),
+    PRIMARY KEY (ID_cliente)
+) ;
 
---
--- Tabla intermedia: Articulo_Clasificacion (muchos a muchos)
---
-DROP TABLE IF EXISTS `articulo_clasificacion`;
-CREATE TABLE `articulo_clasificacion` (
-    `id_articulo` INT NOT NULL,
-    `id_clasificacion` INT NOT NULL,
-    PRIMARY KEY (`id_articulo`, `id_clasificacion`),
-    FOREIGN KEY (`id_articulo`) REFERENCES `articulo`(`id_articulo`),
-    FOREIGN KEY (`id_clasificacion`) REFERENCES `clasificacion`(`id_clasificacion`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+-- Tabla: ventas
+CREATE TABLE ventas (
+    ID_ventas INT NOT NULL AUTO_INCREMENT,
+    descripcion TEXT,
+    PRIMARY KEY (ID_ventas)
+) ;
 
---
--- Tabla: Entidad (cliente o proveedor)
---
-DROP TABLE IF EXISTS `entidad`;
-CREATE TABLE `entidad` (
-    `id_entidad` INT NOT NULL AUTO_INCREMENT,
-    `nombre` VARCHAR(100) NOT NULL,
-    `rol` ENUM('cliente', 'proveedor') NOT NULL,
-    PRIMARY KEY (`id_entidad`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE productoVentas (
+    ID_producto INT NOT NULL,
+    ID_ventas INT NOT NULL,
+    PRIMARY KEY (ID_producto, ID_ventas),
+    FOREIGN KEY (ID_producto) REFERENCES producto(ID_producto),
+    FOREIGN KEY (ID_ventas) REFERENCES ventas(ID_ventas)
+) ;
 
---
--- Tabla: Registro (cabecera)
---
-DROP TABLE IF EXISTS `registro`;
-CREATE TABLE `registro` (
-    `id_registro` INT NOT NULL AUTO_INCREMENT,
-    `fecha` DATETIME NOT NULL,
-    `accion` ENUM('entrada', 'salida') NOT NULL,
-    `razon` VARCHAR(255),
-    `id_entidad` INT,
-    PRIMARY KEY (`id_registro`),
-    FOREIGN KEY (`id_entidad`) REFERENCES `entidad`(`id_entidad`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Tabla: DetalleRegistro (detalle)
---
-DROP TABLE IF EXISTS `detalle_registro`;
-CREATE TABLE `detalle_registro` (
-    `id_detalle` INT NOT NULL AUTO_INCREMENT,
-    `id_registro` INT NOT NULL,
-    `id_articulo` INT NOT NULL,
-    `cantidad` DECIMAL(10,2) NOT NULL,
-    `precio_unitario` DECIMAL(10,2) NOT NULL,
-    PRIMARY KEY (`id_detalle`),
-    FOREIGN KEY (`id_registro`) REFERENCES `registro`(`id_registro`),
-    FOREIGN KEY (`id_articulo`) REFERENCES `articulo`(`id_articulo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
+CREATE TABLE cliente_ventas (
+    ID_cliente INT NOT NULL,
+    ID_ventas INT NOT NULL,
+    PRIMARY KEY (ID_cliente, ID_ventas),
+    FOREIGN KEY (ID_cliente) REFERENCES cliente(ID_cliente),
+    FOREIGN KEY (ID_ventas) REFERENCES ventas(ID_ventas)
+);
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

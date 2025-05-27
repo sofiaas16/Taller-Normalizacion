@@ -14,64 +14,69 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
 DROP DATABASE IF EXISTS cinecampus;
 CREATE DATABASE cinecampus;
 USE cinecampus;
 
--- Tabla de naciones
-CREATE TABLE naciones (
-    id_nacion INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL UNIQUE
+
+CREATE TABLE lugarProcedencia (
+    ID_lugar INT AUTO_INCREMENT PRIMARY KEY,
+    pais VARCHAR(50) NOT NULL
 );
 
--- Tabla de categorias
-CREATE TABLE categorias (
-    id_categoria INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL UNIQUE
+
+CREATE TABLE genero (
+    ID_genero INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL
 );
 
--- Tabla de presentaciones
-CREATE TABLE presentaciones (
-    id_presentacion INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL UNIQUE -- Ej: Digital, Fisico, 35mm, Blu-ray
+
+CREATE TABLE formatos (
+    ID_formato INT AUTO_INCREMENT PRIMARY KEY,
+    nombre ENUM('DVD', 'BluRay', 'Digital', 'VHS') NOT NULL
 );
 
--- Tabla de cintas
-CREATE TABLE cintas (
-    id_cinta INT AUTO_INCREMENT PRIMARY KEY,
-    titulo VARCHAR(255) NOT NULL,
-    duracion INT NOT NULL, -- minutos
-    resumen TEXT,
-    anio_publicacion YEAR,
-    id_nacion INT,
-    id_categoria INT,
-    FOREIGN KEY (id_nacion) REFERENCES naciones(id_nacion),
-    FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria)
+CREATE TABLE peliculas (
+    ID_pelicula INT AUTO_INCREMENT PRIMARY KEY,
+    ID_lugar INT,
+    nombre VARCHAR(100) NOT NULL,
+    fechaLanzamiento DATE,
+    duracion INT,
+    sinopsis VARCHAR(200),
+    FOREIGN KEY (ID_lugar) REFERENCES lugarProcedencia(ID_lugar)
 );
 
--- Tabla intermedia cinta_presentacion (muchos a muchos)
-CREATE TABLE cinta_presentacion (
-    id_cinta INT,
-    id_presentacion INT,
-    PRIMARY KEY (id_cinta, id_presentacion),
-    FOREIGN KEY (id_cinta) REFERENCES cintas(id_cinta),
-    FOREIGN KEY (id_presentacion) REFERENCES presentaciones(id_presentacion)
+
+CREATE TABLE pelGenero (
+    ID_pelicula INT,
+    ID_genero INT,
+    PRIMARY KEY (ID_pelicula, ID_genero),
+    FOREIGN KEY (ID_pelicula) REFERENCES peliculas(ID_pelicula),
+    FOREIGN KEY (ID_genero) REFERENCES genero(ID_genero)
 );
 
--- Tabla de artistas
-CREATE TABLE artistas (
-    id_artista INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(255) NOT NULL,
-    fecha_nacimiento DATE
+
+CREATE TABLE pelFormatos (
+    ID_pelicula INT,
+    ID_formato INT,
+    PRIMARY KEY (ID_pelicula, ID_formato),
+    FOREIGN KEY (ID_pelicula) REFERENCES peliculas(ID_pelicula),
+    FOREIGN KEY (ID_formato) REFERENCES formatos(ID_formato)
 );
 
--- Tabla intermedia cinta_artista (muchos a muchos con tipo de rol)
-CREATE TABLE cinta_artista (
-    id_cinta INT,
-    id_artista INT,
-    tipo_rol VARCHAR(50), -- Ej: Protagonista, Secundario, Extra
-    PRIMARY KEY (id_cinta, id_artista),
-    FOREIGN KEY (id_cinta) REFERENCES cintas(id_cinta),
-    FOREIGN KEY (id_artista) REFERENCES artistas(id_artista)
+
+CREATE TABLE interpretes (
+    ID_interprete INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    genero ENUM('M', 'F', 'Otro'),
+    rol VARCHAR(100) NOT NULL
+);
+
+
+CREATE TABLE pelInterprete (
+    ID_pelicula INT,
+    ID_interprete INT,
+    PRIMARY KEY (ID_pelicula, ID_interprete),
+    FOREIGN KEY (ID_pelicula) REFERENCES peliculas(ID_pelicula),
+    FOREIGN KEY (ID_interprete) REFERENCES interpretes(ID_interprete)
 );

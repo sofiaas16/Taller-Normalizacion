@@ -1,197 +1,190 @@
 
-DROP DATABASE IF EXISTS `clubfutbol`;
-CREATE DATABASE `clubfutbol`;
-USE `clubfutbol`;
-
+-- MySQL dump 10.13  Distrib 8.4.5, for Linux (x86_64)
 --
--- Table structure for table `Ubicacion`
---
+-- Host: localhost    Database: clubfutbol
+-- ------------------------------------------------------
+-- Server version	8.4.5
 
-DROP TABLE IF EXISTS `Ubicacion`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Ubicacion` (
-    `id_ubicacion` int NOT NULL AUTO_INCREMENT,
-    `nombre` varchar(100) NOT NULL,
-    `direccion` varchar(255),
-    `telefono` varchar(20),
-    PRIMARY KEY (`id_ubicacion`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Division`
---
-
-DROP TABLE IF EXISTS `Division`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Division` (
-    `id_division` int NOT NULL AUTO_INCREMENT,
-    `nombre` varchar(50) NOT NULL,
-    PRIMARY KEY (`id_division`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Atleta`
---
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+-- Creación de la base de datosCREATE DATABASE IF NOT EXISTS bd_signos;
+DROP DATABASE IF EXISTS clubfutbol;
+CREATE DATABASE clubfutbol;
+USE clubfutbol;
 
 
+CREATE TABLE IF NOT EXISTS sedes (
+    ID_sede INT PRIMARY KEY,
+    nombre VARCHAR(100),
+    direccion VARCHAR(150)
+);
 
---
--- Table structure for table `PlanEntrenamiento`
---
 
-DROP TABLE IF EXISTS `PlanEntrenamiento`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `PlanEntrenamiento` (
-    `id_plan` int NOT NULL AUTO_INCREMENT,
-    `nombre` varchar(100) NOT NULL,
-    `descripcion` text,
-    `id_ubicacion` int,
-    PRIMARY KEY (`id_plan`),
-    FOREIGN KEY (`id_ubicacion`) REFERENCES `Ubicacion` (`id_ubicacion`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE IF NOT EXISTS torneos (
+    ID_torneos INT PRIMARY KEY,
+    numEquipos INT,
+    fecha DATE
+);
 
---
--- Table structure for table `JornadaEntrenamiento`
---
 
-DROP TABLE IF EXISTS `JornadaEntrenamiento`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `JornadaEntrenamiento` (
-    `id_jornada` int NOT NULL AUTO_INCREMENT,
-    `id_plan` int,
-    `fecha` date,
-    `objetivos` text,
-    PRIMARY KEY (`id_jornada`),
-    FOREIGN KEY (`id_plan`) REFERENCES `PlanEntrenamiento` (`id_plan`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE IF NOT EXISTS calendarioTorneo (
+    ID_calendario INT PRIMARY KEY,
+    fechaInicio DATE,
+    horaInicio DATETIME,
+    horaFin DATETIME
+);
 
---
--- Table structure for table `Atleta_Plan`
---
 
-DROP TABLE IF EXISTS `Atleta_Plan`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Atleta_Plan` (
-    `id_atleta` int,
-    `id_plan` int,
-    PRIMARY KEY (`id_atleta`, `id_plan`),
-    FOREIGN KEY (`id_atleta`) REFERENCES `Atleta` (`id_atleta`),
-    FOREIGN KEY (`id_plan`) REFERENCES `PlanEntrenamiento` (`id_plan`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE IF NOT EXISTS equipo (
+    ID_equipo INT PRIMARY KEY,
+    nombre VARCHAR(100),
+    disponibilidad BOOLEAN
+);
 
---
--- Table structure for table `Actividad`
---
 
-DROP TABLE IF EXISTS `Actividad`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Actividad` (
-    `id_actividad` int NOT NULL AUTO_INCREMENT,
-    `nombre` varchar(100),
-    `fecha` date,
-    `ubicacion` varchar(255),
-    `estado` varchar(50),
-    PRIMARY KEY (`id_actividad`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE IF NOT EXISTS patrocinadorColaborador (
+    ID_patrocinador INT PRIMARY KEY,
+    nombre VARCHAR(100),
+    monto INT
+);
 
---
--- Table structure for table `Equipo`
---
+CREATE TABLE IF NOT EXISTS equipoPatrocinador (
+    ID_equipo INT,
+    ID_patrocinador INT,
+    PRIMARY KEY (ID_equipo, ID_patrocinador),
+    FOREIGN KEY (ID_equipo) REFERENCES equipo(ID_equipo),
+    FOREIGN KEY (ID_patrocinador) REFERENCES patrocinadorColaborador(ID_patrocinador)
+);
 
-DROP TABLE IF EXISTS `Equipo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Equipo` (
-    `id_equipo` int NOT NULL AUTO_INCREMENT,
-    `nombre` varchar(100),
-    `rol` varchar(50),
-    PRIMARY KEY (`id_equipo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `Actividad_Equipo`
---
+CREATE TABLE IF NOT EXISTS jugadores (
+    ID_jugador INT PRIMARY KEY,
+    ID_equipo INT,
+    nombre VARCHAR(100),
+    fechaNac DATE,
+    categoria VARCHAR(100),
+    FOREIGN KEY (ID_equipo) REFERENCES equipo(ID_equipo)
+);
 
-DROP TABLE IF EXISTS `Actividad_Equipo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Actividad_Equipo` (
-    `id_actividad` int,
-    `id_equipo` int,
-    PRIMARY KEY (`id_actividad`, `id_equipo`),
-    FOREIGN KEY (`id_actividad`) REFERENCES `Actividad` (`id_actividad`),
-    FOREIGN KEY (`id_equipo`) REFERENCES `Equipo` (`id_equipo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `Auspiciador`
---
+CREATE TABLE IF NOT EXISTS sesiones (
+    ID_sesiones INT PRIMARY KEY,
+    tipoEntrenamiento INT,
+    objetivoEspecifico TEXT
+);
 
-DROP TABLE IF EXISTS `Auspiciador`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Auspiciador` (
-    `id_auspiciador` int NOT NULL AUTO_INCREMENT,
-    `nombre` varchar(100),
-    `contacto` varchar(100),
-    PRIMARY KEY (`id_auspiciador`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `Actividad_Auspiciador`
---
+CREATE TABLE IF NOT EXISTS sedeSesiones (
+    ID_sede INT,
+    ID_sesiones INT,
+    PRIMARY KEY (ID_sede, ID_sesiones),
+    FOREIGN KEY (ID_sede) REFERENCES sedes(ID_sede),
+    FOREIGN KEY (ID_sesiones) REFERENCES sesiones(ID_sesiones)
+);
 
-DROP TABLE IF EXISTS `Actividad_Auspiciador`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Actividad_Auspiciador` (
-    `id_actividad` int,
-    `id_auspiciador` int,
-    PRIMARY KEY (`id_actividad`, `id_auspiciador`),
-    FOREIGN KEY (`id_actividad`) REFERENCES `Actividad` (`id_actividad`),
-    FOREIGN KEY (`id_auspiciador`) REFERENCES `Auspiciador` (`id_auspiciador`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `Reporte`
---
+CREATE TABLE IF NOT EXISTS calendarioSesiones (
+    ID_calendarioSesiones INT PRIMARY KEY,
+    fechaInicio DATE,
+    fechaFin DATE,
+    horaInicio DATETIME,
+    horaFin DATETIME
+);
 
-DROP TABLE IF EXISTS `Reporte`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Reporte` (
-    `id_reporte` int NOT NULL AUTO_INCREMENT,
-    `id_actividad` int,
-    `descripcion` text,
-    `accion_tomada` text,
-    `fecha` timestamp DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id_reporte`),
-    FOREIGN KEY (`id_actividad`) REFERENCES `Actividad` (`id_actividad`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE IF NOT EXISTS SesionesCal (
+    ID_calendarioSesiones INT,
+    ID_sesiones INT,
+    PRIMARY KEY (ID_calendarioSesiones, ID_sesiones),
+    FOREIGN KEY (ID_calendarioSesiones) REFERENCES calendarioSesiones(ID_calendarioSesiones),
+    FOREIGN KEY (ID_sesiones) REFERENCES sesiones(ID_sesiones)
+);
 
---
--- Table structure for table `Material`
---
+CREATE TABLE IF NOT EXISTS seguimiento (
+    ID_jugador INT,
+    ID_sesiones INT,
+    metrica VARCHAR(100),
+    estado BOOLEAN,
+    PRIMARY KEY (ID_jugador, ID_sesiones),
+    FOREIGN KEY (ID_jugador) REFERENCES jugadores(ID_jugador),
+    FOREIGN KEY (ID_sesiones) REFERENCES sesiones(ID_sesiones)
+);
 
-DROP TABLE IF EXISTS `Material`;
-/*!
+
+CREATE TABLE IF NOT EXISTS PartidoTorneo (
+    ID_partidoTorneo INT PRIMARY KEY,
+    ID_equipo INT,
+    ID_torneos INT,
+    ID_calendario INT,
+    FOREIGN KEY (ID_equipo) REFERENCES equipo(ID_equipo),
+    FOREIGN KEY (ID_torneos) REFERENCES torneos(ID_torneos),
+    FOREIGN KEY (ID_calendario) REFERENCES calendarioTorneo(ID_calendario)
+);
+
+
+CREATE TABLE IF NOT EXISTS sedePartido (
+    ID_sede INT,
+    ID_partidoTorneo INT,
+    PRIMARY KEY (ID_sede, ID_partidoTorneo),
+    FOREIGN KEY (ID_sede) REFERENCES sedes(ID_sede),
+    FOREIGN KEY (ID_partidoTorneo) REFERENCES PartidoTorneo(ID_partidoTorneo)
+);
+
+
+CREATE TABLE IF NOT EXISTS partidosAmistosos (
+    ID_amistosos INT PRIMARY KEY,
+    fecha DATE,
+    horaInicio DATETIME,
+    horaFin DATETIME
+);
+
+
+CREATE TABLE IF NOT EXISTS sedesPartido (
+    ID_sede INT,
+    ID_amistosos INT,
+    PRIMARY KEY (ID_sede, ID_amistosos),
+    FOREIGN KEY (ID_sede) REFERENCES sedes(ID_sede),
+    FOREIGN KEY (ID_amistosos) REFERENCES partidosAmistosos(ID_amistosos)
+);
+
+-- Tabla: comisarios
+CREATE TABLE IF NOT EXISTS comisarios (
+    ID_comisario INT PRIMARY KEY,
+    nombre VARCHAR(100),
+    disponibilidad BOOLEAN
+);
+
+
+CREATE TABLE IF NOT EXISTS arbitros (
+    ID_arbitro INT PRIMARY KEY,
+    nombre VARCHAR(100),
+    disponibilidad BOOLEAN
+);
+
+
+CREATE TABLE IF NOT EXISTS pTorneoComisarios (
+    ID_comisario INT,
+    ID_partidoTorneo INT,
+    PRIMARY KEY (ID_comisario, ID_partidoTorneo),
+    FOREIGN KEY (ID_comisario) REFERENCES comisarios(ID_comisario),
+    FOREIGN KEY (ID_partidoTorneo) REFERENCES PartidoTorneo(ID_partidoTorneo)
+);
+
+CREATE TABLE IF NOT EXISTS pTorneoArbitros (
+    ID_arbitro INT,
+    ID_partidoTorneo INT,
+    PRIMARY KEY (ID_arbitro, ID_partidoTorneo),
+    FOREIGN KEY (ID_arbitro) REFERENCES arbitros(ID_arbitro),
+    FOREIGN KEY (ID_partidoTorneo) REFERENCES PartidoTorneo(ID_partidoTorneo)
+);
+
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
